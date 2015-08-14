@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Kości - 1000</title>
+		<script src="lib/angular.min.js"></script>
+	</head>
+	<body>
+		<div ng-app="dice" ng-controller="GameCopntroller"> 
+			<div ng-bind="warning"></div>
+			<table>
+			  <tr ng-repeat="x in players">
+				<td>
+					<span ng-if="players[currentPlayerIndex] == x">&gt;</span></td>
+					<td>{{ x.name }}</td>
+					<td>{{ x.points }}</td>
+					<td>{{ x.lastPointChange }}</td>
+			  </tr>
+			</table>
+			<div ng-hide="hidePointsPrompt">
+				<input type="text" ng-model="newPoints">
+				<button ng-click="addPoints()">Add points</button>
+			</div>
+			<div ng-hide="hideNewPlayerPrompt">
+				Name of new player: <input type="text" ng-model="newPlayerName">
+				<button ng-click="addNewPlayer()">Add</button>
+				<button ng-click="startGame()">Done</button>
+			</div>
+		</div>
+	</body>
+	<script src="js/controller.js"></script>
+</html> 
