@@ -130,4 +130,140 @@ describe("gameController", function() {
 			});
 		});	
 	});
+	
+	describe("addPoints()", function() {
+		it("adds points for the current player at start", function() {
+			$scope.players = [
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.newPoints = 120;
+			
+			$scope.addPoints();
+		
+			expect($scope.players).toEqual([
+				{ name: "John", points: 120, lastPointChange: 120 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			]);
+		});
+		
+		it("raises warning when trying to add less than 50 points at start", function() {
+			$scope.players = [
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.newPoints = 30;
+			
+			$scope.addPoints();
+		
+			expect($scope.warning).toEqual("You must get at least 50 points to start!");
+			expect($scope.players).toEqual([
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			]);
+		});
+
+		it("lets add 0 points even if player has 0 points", function() {
+			$scope.players = [
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.newPoints = 0;
+			
+			$scope.addPoints();
+		
+			expect($scope.warning).toEqual("");
+			expect($scope.players).toEqual([
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			]);
+		});
+		
+		it("removes any warning if the move is legal", function() {
+			$scope.players = [
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.warning = "Some warning";
+			$scope.newPoints = 80;
+			
+			$scope.addPoints();
+		
+			expect($scope.warning).toEqual("");
+		});
+		
+		it("correctly adds two non-zero values of points", function() {
+			$scope.players = [
+				{ name: "John", points: 80, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.newPoints = 40;
+			
+			$scope.addPoints();
+			
+			expect($scope.players).toEqual([
+				{ name: "John", points: 120, lastPointChange: 40 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			]);
+			expect($scope.warning).toEqual("");
+		});
+		
+		it("resets new points value", function() {
+			$scope.players = [
+				{ name: "John", points: 80, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.newPoints = 40;
+			
+			$scope.addPoints();
+			
+			expect($scope.newPoints).toEqual("");
+		});		
+		
+		// TODO: a problem with adding two integers. If points are equal to 0 and one
+		// adds a number to it, it becomes e.g. '040' (a string!) instead of just 40.
+		// It's solved by using Number(...) on eah operand. But how should I test it?
+		
+		describe("moves to the next active player", function() {
+			it("if two active players and first is active", function() {
+				$scope.players = [
+					{ name: "John", points: 80, lastPointChange: 0 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 0;
+				$scope.newPoints = 40;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 120, lastPointChange: 40 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(1);
+			});
+			
+			it("if two active players and the second is active", function() {
+				$scope.players = [
+					{ name: "John", points: 80, lastPointChange: 80 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 1;
+				$scope.newPoints = 60;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 80, lastPointChange: 80 },
+					{ name: "Kate", points: 60, lastPointChange: 60 }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(0);
+			});			
+		});
+	});
 });

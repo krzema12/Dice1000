@@ -43,4 +43,20 @@ angular.module('dice', []).controller('GameCopntroller', function($scope) {
 		
 		return found;
 	};
+	
+	$scope.addPoints = function() {
+		if ($scope.players[$scope.currentPlayerIndex].points == 0
+			&& $scope.newPoints < 50 && $scope.newPoints > 0)
+		{
+			$scope.warning = "You must get at least 50 points to start!";
+			return;
+		}
+
+		$scope.players[$scope.currentPlayerIndex].points =
+			Number($scope.players[$scope.currentPlayerIndex].points) + Number($scope.newPoints);
+		$scope.players[$scope.currentPlayerIndex].lastPointChange = $scope.newPoints;
+		$scope.warning = "";
+		$scope.currentPlayerIndex = ($scope.currentPlayerIndex + 1)%$scope.players.length;
+		$scope.newPoints = "";
+	};
 });
