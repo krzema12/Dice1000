@@ -314,6 +314,20 @@ describe("gameController", function() {
 			expect($scope.warning).toEqual("");
 		});
 		
+		it("resets the points field if the move is legal", function() {
+			$scope.players = [
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.warning = "Some warning";
+			$scope.newPoints = 80;
+			
+			$scope.addPoints();
+		
+			expect($scope.newPoints).toEqual("");
+		});
+		
 		it("correctly adds two non-zero values of points", function() {
 			$scope.players = [
 				{ name: "John", points: 80, lastPointChange: 0 },
