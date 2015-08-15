@@ -164,6 +164,124 @@ describe("gameController", function() {
 				{ name: "Kate", points: 0, lastPointChange: 0 }
 			]);
 		});
+		
+		describe("raises warning when trying to add", function() {
+			beforeEach(function() {
+				$scope.players = [
+					{ name: "John", points: 0, lastPointChange: 0 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 0;
+			});
+			
+			it("an empty points value", function() {
+				$scope.newPoints = "";
+				
+				$scope.addPoints();
+			
+				expect($scope.warning).toEqual("You must enter some points to be added!");
+				expect($scope.players).toEqual([
+					{ name: "John", points: 0, lastPointChange: 0 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				]);
+			});
+			
+			it("an undefined value", function() {
+				$scope.newPoints = undefined;
+				
+				$scope.addPoints();
+			
+				expect($scope.warning).toEqual("You must enter some points to be added!");
+				expect($scope.players).toEqual([
+					{ name: "John", points: 0, lastPointChange: 0 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				]);
+			});
+			
+			describe("something that is not a legal number of points,", function() {
+				it("like a negative number", function() {
+					$scope.newPoints = -45;
+					
+					$scope.addPoints();
+				
+					expect($scope.warning).toEqual("You cannot add negative number of points!");
+					expect($scope.players).toEqual([
+						{ name: "John", points: 0, lastPointChange: 0 },
+						{ name: "Kate", points: 0, lastPointChange: 0 }
+					]);
+				});
+				
+				it("like a positive number, not divisible by 5", function() {
+					$scope.newPoints = 84;
+					
+					$scope.addPoints();
+				
+					expect($scope.warning).toEqual("Points must be divisible by 5!");
+					expect($scope.players).toEqual([
+						{ name: "John", points: 0, lastPointChange: 0 },
+						{ name: "Kate", points: 0, lastPointChange: 0 }
+					]);
+				});
+				
+				it("like a string consisting of letters", function() {
+					$scope.newPoints = "Abc";
+					
+					$scope.addPoints();
+				
+					expect($scope.warning).toEqual("You must enter some valid value!");
+					expect($scope.players).toEqual([
+						{ name: "John", points: 0, lastPointChange: 0 },
+						{ name: "Kate", points: 0, lastPointChange: 0 }
+					]);
+				});
+			});
+		});
+		
+		describe("correctly normalizes numeric values", function() {
+			beforeEach(function() {
+				$scope.players = [
+					{ name: "John", points: 0, lastPointChange: 0 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 0;
+			});
+
+			it("like -0", function() {
+				$scope.newPoints = "-0";
+				
+				$scope.addPoints();
+			
+				expect($scope.players).toEqual([
+					{ name: "John", points: 0, lastPointChange: 0 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				]);
+				expect($scope.warning).toEqual("");
+			});
+			
+			it("like 00050", function() {
+				$scope.newPoints = "00050";
+				
+				$scope.addPoints();
+			
+				expect($scope.players).toEqual([
+					{ name: "John", points: 50, lastPointChange: 50 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				]);
+				expect($scope.warning).toEqual("");
+			});
+			
+			it("like '    80  '", function() {
+				$scope.newPoints = "    80  ";
+				
+				$scope.addPoints();
+			
+				expect($scope.players).toEqual([
+					{ name: "John", points: 80, lastPointChange: 80 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				]);
+				expect($scope.warning).toEqual("");
+			});
+		});		
 
 		it("lets add 0 points even if player has 0 points", function() {
 			$scope.players = [
