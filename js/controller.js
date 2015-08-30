@@ -47,7 +47,7 @@ angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function(
 	
 	$scope._addPoints = function(playerIndex, points) {
 		$scope.players[playerIndex].points = Number($scope.players[playerIndex].points) + Number(points);
-		$scope.players[playerIndex].lastPointChange = Number(points);
+		$scope.players[playerIndex].lastPointChange = (Number(points) > 0 ? '+' + Number(points) : Number(points));
 	};
 	
 	$scope.addPoints = function() {

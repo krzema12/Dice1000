@@ -143,7 +143,7 @@ describe("gameController", function() {
 			$scope.addPoints();
 		
 			expect($scope.players).toEqual([
-				{ name: "John", points: 120, lastPointChange: 120 },
+				{ name: "John", points: 120, lastPointChange: '+120' },
 				{ name: "Kate", points: 0, lastPointChange: 0 }
 			]);
 		});
@@ -281,7 +281,7 @@ describe("gameController", function() {
 				$scope.addPoints();
 			
 				expect($scope.players).toEqual([
-					{ name: "John", points: 50, lastPointChange: 50 },
+					{ name: "John", points: 50, lastPointChange: '+50' },
 					{ name: "Kate", points: 0, lastPointChange: 0 }
 				]);
 				expect($scope.warning).toEqual("");
@@ -293,7 +293,7 @@ describe("gameController", function() {
 				$scope.addPoints();
 			
 				expect($scope.players).toEqual([
-					{ name: "John", points: 80, lastPointChange: 80 },
+					{ name: "John", points: 80, lastPointChange: '+80' },
 					{ name: "Kate", points: 0, lastPointChange: 0 }
 				]);
 				expect($scope.warning).toEqual("");
@@ -356,7 +356,7 @@ describe("gameController", function() {
 			$scope.addPoints();
 			
 			expect($scope.players).toEqual([
-				{ name: "John", points: 120, lastPointChange: 40 },
+				{ name: "John", points: 120, lastPointChange: '+40' },
 				{ name: "Kate", points: 0, lastPointChange: 0 }
 			]);
 			expect($scope.warning).toEqual("");
@@ -391,7 +391,7 @@ describe("gameController", function() {
 				$scope.addPoints();
 				
 				expect($scope.players).toEqual([
-					{ name: "John", points: 120, lastPointChange: 40 },
+					{ name: "John", points: 120, lastPointChange: '+40' },
 					{ name: "Kate", points: 0, lastPointChange: 0 }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(1);
@@ -399,7 +399,7 @@ describe("gameController", function() {
 			
 			it("if two active players and the second is active", function() {
 				$scope.players = [
-					{ name: "John", points: 80, lastPointChange: 80 },
+					{ name: "John", points: 80, lastPointChange: '+80' },
 					{ name: "Kate", points: 0, lastPointChange: 0 }
 				];
 				$scope.currentPlayerIndex = 1;
@@ -408,8 +408,8 @@ describe("gameController", function() {
 				$scope.addPoints();
 				
 				expect($scope.players).toEqual([
-					{ name: "John", points: 80, lastPointChange: 80 },
-					{ name: "Kate", points: 60, lastPointChange: 60 }
+					{ name: "John", points: 80, lastPointChange: '+80' },
+					{ name: "Kate", points: 60, lastPointChange: '+60' }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(0);
 			});			
@@ -428,7 +428,7 @@ describe("gameController", function() {
 				
 				expect($scope.players).toEqual([
 					{ name: "John", points: 30, lastPointChange: -50 },
-					{ name: "Kate", points: 100, lastPointChange: 40 }
+					{ name: "Kate", points: 100, lastPointChange: '+40' }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(0);				
 			});
@@ -445,7 +445,7 @@ describe("gameController", function() {
 				
 				expect($scope.players).toEqual([
 					{ name: "John", points: 80, lastPointChange: 0 },
-					{ name: "Kate", points: 120, lastPointChange: 40 }
+					{ name: "Kate", points: 120, lastPointChange: '+40' }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(0);				
 			});
@@ -462,7 +462,7 @@ describe("gameController", function() {
 				
 				expect($scope.players).toEqual([
 					{ name: "John", points: 100, lastPointChange: 0 },
-					{ name: "Kate", points: 100, lastPointChange: 40 }
+					{ name: "Kate", points: 100, lastPointChange: '+40' }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(0);				
 			});
@@ -479,7 +479,7 @@ describe("gameController", function() {
 				
 				expect($scope.players).toEqual([
 					{ name: "John", points: 0, lastPointChange: -20 },
-					{ name: "Kate", points: 50, lastPointChange: 50 }
+					{ name: "Kate", points: 50, lastPointChange: '+50' }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(0);				
 			});
@@ -488,8 +488,8 @@ describe("gameController", function() {
 		describe("winning", function() {
 			it("in case of 2 players, causes the current player to win and stop playing if it gets 1000 points or more", function() {
 				$scope.players = [
-					{ name: "John", points: 850, lastPointChange: 20, won: false },
-					{ name: "Kate", points: 425, lastPointChange: 60, won: false }
+					{ name: "John", points: 850, lastPointChange: '+20', won: false },
+					{ name: "Kate", points: 425, lastPointChange: '+60', won: false }
 				];
 				$scope.currentPlayerIndex = 0;
 				$scope.newPoints = 200;
@@ -497,8 +497,8 @@ describe("gameController", function() {
 				$scope.addPoints();
 				
 				expect($scope.players).toEqual([
-					{ name: "John", points: 1050, lastPointChange: 200, won: true },
-					{ name: "Kate", points: 425, lastPointChange: 60, won: false }
+					{ name: "John", points: 1050, lastPointChange: '+200', won: true },
+					{ name: "Kate", points: 425, lastPointChange: '+60', won: false }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(1);
 				expect($scope.gameFinished).toEqual(true);
@@ -506,9 +506,9 @@ describe("gameController", function() {
 			
 			it("in case of 3 players, jumps over players that already won", function() {
 				$scope.players = [
-					{ name: "John", points: 600, lastPointChange: 20, won: false },
-					{ name: "Kate", points: 1025, lastPointChange: 60, won: true },
-					{ name: "Ron", points: 425, lastPointChange: 60, won: false }
+					{ name: "John", points: 600, lastPointChange: '+20', won: false },
+					{ name: "Kate", points: 1025, lastPointChange: '+60', won: true },
+					{ name: "Ron", points: 425, lastPointChange: '+60', won: false }
 				];
 				$scope.currentPlayerIndex = 0;
 				$scope.newPoints = 200;
@@ -516,9 +516,9 @@ describe("gameController", function() {
 				$scope.addPoints();
 				
 				expect($scope.players).toEqual([
-					{ name: "John", points: 800, lastPointChange: 200, won: false },
-					{ name: "Kate", points: 1025, lastPointChange: 60, won: true },
-					{ name: "Ron", points: 425, lastPointChange: 60, won: false }
+					{ name: "John", points: 800, lastPointChange: '+200', won: false },
+					{ name: "Kate", points: 1025, lastPointChange: '+60', won: true },
+					{ name: "Ron", points: 425, lastPointChange: '+60', won: false }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(2);
 			});			
