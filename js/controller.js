@@ -1,5 +1,6 @@
-angular.module('dice', []).controller('GameCopntroller', function($scope) {
+angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function($scope) {
 	$scope.players = [ ];
+	$scope.gameFinished = false;
 	$scope.warning = "";
 	
 	$scope.hideNewPlayerPrompt = false;
@@ -34,7 +35,7 @@ angular.module('dice', []).controller('GameCopntroller', function($scope) {
 	$scope._playerAlreadyExists = function(name) {
 		var found = false;
 
-		for(var i = 0; i < $scope.players.length; i++) {
+		for (var i = 0; i < $scope.players.length; i++) {
 			if ($scope.players[i].name == name) {
 				found = true;
 				break;
@@ -42,6 +43,11 @@ angular.module('dice', []).controller('GameCopntroller', function($scope) {
 		}
 		
 		return found;
+	};
+	
+	$scope._addPoints = function(playerIndex, points) {
+		$scope.players[playerIndex].points = Number($scope.players[playerIndex].points) + Number(points);
+		$scope.players[playerIndex].lastPointChange = Number(points);
 	};
 	
 	$scope.addPoints = function() {
@@ -59,11 +65,6 @@ angular.module('dice', []).controller('GameCopntroller', function($scope) {
 			$scope.warning = "You cannot add negative number of points!";
 			return;
 		}
-		
-		if ($scope.newPoints%5 != 0) {
-			$scope.warning = "Points must be divisible by 5!";
-			return;	
-		}
 	
 		if ($scope.players[$scope.currentPlayerIndex].points == 0
 			&& $scope.newPoints < 50 && $scope.newPoints > 0)
@@ -71,16 +72,45 @@ angular.module('dice', []).controller('GameCopntroller', function($scope) {
 			$scope.warning = "You must get at least 50 points to start!";
 			return;
 		}
+
+		if ($scope.newPoints%5 != 0) {
+			$scope.warning = "Points must be divisible by 5!";
+			return;	
+		}
 		
 		if ($scope.newPoints == "-0") {
 			$scope.newPoints = 0;
 		}
+		
+		for (var i = 0; i < $scope.players.length; i++) {
+			if (i == $scope.currentPlayerIndex) {
+				continue;
+			}
+			
+			if ($scope.players[i].points > $scope.players[$scope.currentPlayerIndex].points &&
+				$scope.players[i].points < Number($scope.players[$scope.currentPlayerIndex].points) + Number($scope.newPoints))
+			{
+				$scope._addPoints(i, -Math.min(50, $scope.players[i].points));
+			}
+		}
 
-		$scope.players[$scope.currentPlayerIndex].points =
-			Number($scope.players[$scope.currentPlayerIndex].points) + Number($scope.newPoints);
-		$scope.players[$scope.currentPlayerIndex].lastPointChange = Number($scope.newPoints);
+		$scope._addPoints($scope.currentPlayerIndex, $scope.newPoints);
+		
+		if ($scope.players[$scope.currentPlayerIndex].points >= 1000) {
+			$scope.players[$scope.currentPlayerIndex].won = true;
+		}
+		
+		if ($scope.players.filter(function (player) { return player.points >= 1000; }).length + 1 == $scope.players.length) {
+			$scope.gameFinished = true;
+		}
+		
 		$scope.warning = "";
-		$scope.currentPlayerIndex = ($scope.currentPlayerIndex + 1)%$scope.players.length;
+		
+		do {
+			$scope.currentPlayerIndex = ($scope.currentPlayerIndex + 1)%$scope.players.length;
+		}
+		while ($scope.players[$scope.currentPlayerIndex].won);
+		
 		$scope.newPoints = "";
 	};
 });

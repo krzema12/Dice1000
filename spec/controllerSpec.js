@@ -165,6 +165,23 @@ describe("gameController", function() {
 			]);
 		});
 		
+		it("raises proper warning when trying to add less than 50 points at start and the points aren't divisible by 5", function() {
+			$scope.players = [
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			];
+			$scope.currentPlayerIndex = 0;
+			$scope.newPoints = 34;
+			
+			$scope.addPoints();
+		
+			expect($scope.warning).toEqual("You must get at least 50 points to start!");
+			expect($scope.players).toEqual([
+				{ name: "John", points: 0, lastPointChange: 0 },
+				{ name: "Kate", points: 0, lastPointChange: 0 }
+			]);
+		});
+		
 		describe("raises warning when trying to add", function() {
 			beforeEach(function() {
 				$scope.players = [
@@ -395,6 +412,115 @@ describe("gameController", function() {
 					{ name: "Kate", points: 60, lastPointChange: 60 }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(0);
+			});			
+		});
+		
+		describe("subtracts 50 points from another player(s) when current player precedes them", function() {
+			it("and the current player is strictly before players that are to be preceded", function() {
+				$scope.players = [
+					{ name: "John", points: 80, lastPointChange: 0 },
+					{ name: "Kate", points: 60, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 1;
+				$scope.newPoints = 40;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 30, lastPointChange: -50 },
+					{ name: "Kate", points: 100, lastPointChange: 40 }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(0);				
+			});
+			
+			it("and the current player is equal with another player", function() {
+				$scope.players = [
+					{ name: "John", points: 80, lastPointChange: 0 },
+					{ name: "Kate", points: 80, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 1;
+				$scope.newPoints = 40;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 80, lastPointChange: 0 },
+					{ name: "Kate", points: 120, lastPointChange: 40 }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(0);				
+			});
+			
+			it("and the current player will be equal with another player after the move", function() {
+				$scope.players = [
+					{ name: "John", points: 100, lastPointChange: 0 },
+					{ name: "Kate", points: 60, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 1;
+				$scope.newPoints = 40;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 100, lastPointChange: 0 },
+					{ name: "Kate", points: 100, lastPointChange: 40 }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(0);				
+			});
+			
+			it("and some player has less than 50 points and will be preceded", function() {
+				$scope.players = [
+					{ name: "John", points: 20, lastPointChange: -50 },
+					{ name: "Kate", points: 0, lastPointChange: 0 }
+				];
+				$scope.currentPlayerIndex = 1;
+				$scope.newPoints = 50;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 0, lastPointChange: -20 },
+					{ name: "Kate", points: 50, lastPointChange: 50 }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(0);				
+			});
+		});
+		
+		describe("winning", function() {
+			it("in case of 2 players, causes the current player to win and stop playing if it gets 1000 points or more", function() {
+				$scope.players = [
+					{ name: "John", points: 850, lastPointChange: 20, won: false },
+					{ name: "Kate", points: 425, lastPointChange: 60, won: false }
+				];
+				$scope.currentPlayerIndex = 0;
+				$scope.newPoints = 200;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 1050, lastPointChange: 200, won: true },
+					{ name: "Kate", points: 425, lastPointChange: 60, won: false }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(1);
+				expect($scope.gameFinished).toEqual(true);
+			});
+			
+			it("in case of 3 players, jumps over players that already won", function() {
+				$scope.players = [
+					{ name: "John", points: 600, lastPointChange: 20, won: false },
+					{ name: "Kate", points: 1025, lastPointChange: 60, won: true },
+					{ name: "Ron", points: 425, lastPointChange: 60, won: false }
+				];
+				$scope.currentPlayerIndex = 0;
+				$scope.newPoints = 200;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 800, lastPointChange: 200, won: false },
+					{ name: "Kate", points: 1025, lastPointChange: 60, won: true },
+					{ name: "Ron", points: 425, lastPointChange: 60, won: false }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(2);
 			});			
 		});
 	});
