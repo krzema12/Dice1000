@@ -34,7 +34,7 @@
 						<td>{{ x.points }}</td>
 						<td ng-class="{ red: x.lastPointChange < 0, blue: x.lastPointChange == 0, green: x.lastPointChange > 0 }">{{ x.lastPointChange }}</td>
 						<td style="width: 100%">
-							<progress><bar animate="false" value="x.points/10"></bar></progress>
+							<progress class="oneStepZonesProgressBarBackground"><bar animate="false" class="oneStepZonesProgressBarForeground" value="x.points/10"></bar></progress>
 						</td>
 					</tr>
 				</tbody>

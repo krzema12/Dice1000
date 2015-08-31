@@ -6,3 +6,13 @@
 {
 	font-weight: bold;
 }
+
+.oneStepZonesProgressBarBackground
+{
+	background: linear-gradient(to right, #F5F5F5 0%, #F5F5F5 40%, red 40%, red 50%, #F5F5F5 50%, #F5F5F5 80%, red 80%, red 90%, #F5F5F5 90%, #F5F5F5 100%);
+}
+
+.oneStepZonesProgressBarForeground
+{
+	opacity: 0.9;
+}
