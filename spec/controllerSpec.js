@@ -485,7 +485,7 @@ describe("gameController", function() {
 			});
 		});
 		
-		describe("winning", function() {
+		describe("correctly handles winning", function() {
 			it("in case of 2 players, causes the current player to win and stop playing if it gets 1000 points or more", function() {
 				$scope.players = [
 					{ name: "John", points: 850, lastPointChange: '+20', won: false },
@@ -521,6 +521,205 @@ describe("gameController", function() {
 					{ name: "Ron", points: 425, lastPointChange: '+60', won: false }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(2);
+			});			
+		});
+		
+		describe("correctly handles staying in a one-step zone", function() {
+			describe("for 400-500 zone", function() {
+				it("raises a warning when player has 400 points and tries to add less than 100 points", function() {
+					$scope.players = [
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 400, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 20;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 400, lastPointChange: '+60', won: false }
+					]);
+					expect($scope.warning).toEqual("You must get at least 100 points to get out of the one-step zone!");
+					expect($scope.currentPlayerIndex).toEqual(1);			
+				});
+				
+				it("raises a warning when player is somewhere in the middle of the one-step zone and and tries to add points to stay in the zone", function() {
+					$scope.players = [
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 430, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 20;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 430, lastPointChange: '+60', won: false }
+					]);
+					expect($scope.warning).toEqual("You must get at least 70 points to get out of the one-step zone!");
+					expect($scope.currentPlayerIndex).toEqual(1);			
+				});	
+				
+				it("correctly adds points when player has 400 points and adds 100 points", function() {
+					$scope.players = [
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 400, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 100;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 500, lastPointChange: '+100', won: false }
+					]);
+					expect($scope.currentPlayerIndex).toEqual(0);			
+				});
+				
+				it("correctly adds points when player is somewhere in the middle of the one-step zone and adds some points to get out of the zone", function() {
+					$scope.players = [
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 450, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 70;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 520, lastPointChange: '+70', won: false }
+					]);
+					expect($scope.currentPlayerIndex).toEqual(0);			
+				});
+				
+				it("correctly adds 0 points when inside a zone", function() {
+					$scope.players = [
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 450, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 0;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 450, lastPointChange: 0, won: false }
+					]);
+					expect($scope.warning).toEqual("");
+					expect($scope.currentPlayerIndex).toEqual(0);	
+				});	
+			});
+			
+			describe("for 800-900 zone", function() {
+				it("raises a warning when player has 800 points and tries to add less than 100 points", function() {
+					$scope.players = [
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 800, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 20;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 800, lastPointChange: '+60', won: false }
+					]);
+					expect($scope.warning).toEqual("You must get at least 100 points to get out of the one-step zone!");
+					expect($scope.currentPlayerIndex).toEqual(1);			
+				});
+				
+				it("raises a warning when player is somewhere in the middle of the one-step zone and and tries to add points to stay in the zone", function() {
+					$scope.players = [
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 830, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 20;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 830, lastPointChange: '+60', won: false }
+					]);
+					expect($scope.warning).toEqual("You must get at least 70 points to get out of the one-step zone!");
+					expect($scope.currentPlayerIndex).toEqual(1);			
+				});	
+				
+				it("correctly adds points when player has 800 points and adds 100 points", function() {
+					$scope.players = [
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 800, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 100;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 900, lastPointChange: '+100', won: false }
+					]);
+					expect($scope.currentPlayerIndex).toEqual(0);			
+				});
+				
+				it("correctly adds points when player is somewhere in the middle of the one-step zone and adds some points to get out of the zone", function() {
+					$scope.players = [
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 850, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 70;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 250, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 920, lastPointChange: '+70', won: false }
+					]);
+					expect($scope.currentPlayerIndex).toEqual(0);			
+				});
+				
+				it("correctly adds 0 points when inside a zone", function() {
+					$scope.players = [
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 850, lastPointChange: '+60', won: false }
+					];
+					$scope.currentPlayerIndex = 1;
+					$scope.newPoints = 0;
+					
+					$scope.addPoints();
+					
+					expect($scope.players).toEqual([
+						{ name: "John", points: 850, lastPointChange: '+20', won: false },
+						{ name: "Kate", points: 850, lastPointChange: 0, won: false }
+					]);
+					expect($scope.warning).toEqual("");
+					expect($scope.currentPlayerIndex).toEqual(0);	
+				});	
+			});
+			
+			it("correctly adds points when player is somewhere in the middle of the first one-step zone and adds some points to get to the second zone", function() {
+				$scope.players = [
+					{ name: "John", points: 850, lastPointChange: '+20', won: false },
+					{ name: "Kate", points: 450, lastPointChange: '+60', won: false }
+				];
+				$scope.currentPlayerIndex = 1;
+				$scope.newPoints = 400;
+				
+				$scope.addPoints();
+				
+				expect($scope.players).toEqual([
+					{ name: "John", points: 850, lastPointChange: '+20', won: false },
+					{ name: "Kate", points: 850, lastPointChange: '+400', won: false }
+				]);
+				expect($scope.currentPlayerIndex).toEqual(0);			
 			});			
 		});
 	});

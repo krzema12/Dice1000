@@ -1,5 +1,6 @@
 angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function($scope) {
 	$scope.players = [ ];
+	$scope.oneStepZones = [ { begin: 400, end: 500 }, { begin: 800, end: 900 } ];
 	$scope.gameFinished = false;
 	$scope.warning = "";
 	
@@ -50,6 +51,16 @@ angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function(
 		$scope.players[playerIndex].lastPointChange = (Number(points) > 0 ? '+' + Number(points) : Number(points));
 	};
 	
+	$scope._checkInWhichOneStepZone = function(points) {
+		for (var i = 0; i < $scope.oneStepZones.length; i++) {
+			if (points >= $scope.oneStepZones[i].begin && points < $scope.oneStepZones[i].end) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
 	$scope.addPoints = function() {
 		if (($scope.newPoints == "" || $scope.newPoints == undefined) && $scope.newPoints != "0") {
 			$scope.warning = "You must enter some points to be added!";
@@ -80,6 +91,15 @@ angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function(
 		
 		if ($scope.newPoints == "-0") {
 			$scope.newPoints = 0;
+		}
+		
+		// Input normalization and error handling done.
+		
+		var zone = $scope._checkInWhichOneStepZone($scope.players[$scope.currentPlayerIndex].points);
+		
+		if (zone != -1 && $scope.newPoints > 0 && Number($scope.players[$scope.currentPlayerIndex].points) + Number($scope.newPoints) < $scope.oneStepZones[zone].end) {
+			$scope.warning = "You must get at least " + ($scope.oneStepZones[zone].end - $scope.players[$scope.currentPlayerIndex].points) + " points to get out of the one-step zone!";
+			return;
 		}
 		
 		for (var i = 0; i < $scope.players.length; i++) {
