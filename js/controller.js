@@ -1,12 +1,9 @@
 angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function($scope) {
 	$scope.players = [ ];
 	$scope.oneStepZones = [ { begin: 400, end: 500 }, { begin: 800, end: 900 } ];
-	$scope.gameFinished = false;
+	$scope.stage = 'adding_players';
 	$scope.warning = "";
-	
-	$scope.hideNewPlayerPrompt = false;
-	$scope.hidePointsPrompt = true;
-	
+
 	$scope.addNewPlayer = function() {
 		if (!$scope.newPlayerName) {
 			$scope.warning = "You must enter player's name!";
@@ -27,8 +24,7 @@ angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function(
 			return;
 		}
 
-		$scope.hideNewPlayerPrompt = true;
-		$scope.hidePointsPrompt = false;
+		$scope.stage = 'playing';
 		$scope.currentPlayerIndex = 0;
 		$scope.warning = "";
 	};
@@ -121,7 +117,7 @@ angular.module('dice', ['ui.bootstrap']).controller('GameCopntroller', function(
 		}
 		
 		if ($scope.players.filter(function (player) { return player.points >= 1000; }).length + 1 == $scope.players.length) {
-			$scope.gameFinished = true;
+			$scope.stage = 'finished';
 		}
 		
 		$scope.warning = "";

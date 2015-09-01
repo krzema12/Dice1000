@@ -9,12 +9,8 @@ describe("gameController", function() {
 	}));
 	
 	describe("app at startup", function() {
-		it("has new player's prompt visible", function() {
-			expect($scope.hideNewPlayerPrompt).toEqual(false);
-		});
-		
-		it("has new points prompt invisible", function() {
-			expect($scope.hidePointsPrompt).toEqual(true);
+		it("is in the players adding stage", function() {
+			expect($scope.stage).toEqual('adding_players');
 		});
 		
 		it("has no warning", function() {
@@ -91,8 +87,7 @@ describe("gameController", function() {
 			$scope.startGame();
 		
 			expect($scope.warning).toEqual("There's too little players added!");
-			expect($scope.hideNewPlayerPrompt).toEqual(false);
-			expect($scope.hidePointsPrompt).toEqual(true);
+			expect($scope.stage).toEqual('adding_players');
 		});	
 	
 		describe("with list of players with more than one player", function() {
@@ -103,16 +98,10 @@ describe("gameController", function() {
 				];
 			});
 
-			it("hides the field to add new players", function() {
+			it("changes current stage to playing", function() {
 				$scope.startGame();
 			
-				expect($scope.hideNewPlayerPrompt).toEqual(true);
-			});
-			
-			it("shows the field to add points", function() {
-				$scope.startGame();
-			
-				expect($scope.hidePointsPrompt).toEqual(false);
+				expect($scope.stage).toEqual('playing');
 			});
 			
 			it("removes any warning", function() {
@@ -501,7 +490,7 @@ describe("gameController", function() {
 					{ name: "Kate", points: 425, lastPointChange: '+60', won: false }
 				]);
 				expect($scope.currentPlayerIndex).toEqual(1);
-				expect($scope.gameFinished).toEqual(true);
+				expect($scope.stage).toEqual('finished');
 			});
 			
 			it("in case of 3 players, jumps over players that already won", function() {
