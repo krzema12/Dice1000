@@ -40,16 +40,25 @@
 				</tbody>
 			</table>
 			<div ng-hide="stage != 'playing'">
-				<input type="text" ng-model="newPoints">
-				<button ng-click="addPoints()" class="btn btn-primary">Add points</button>
+				<form>
+					<input type="text" ng-model="newPoints" id="newPoints">
+					<button ng-click="addPoints()" class="btn btn-primary">Add points</button>
+				</form>
 			</div>
 			<div ng-hide="stage != 'adding_players'">
-				Name of new player: <input type="text" ng-model="newPlayerName">
-				<button ng-click="addNewPlayer()" class="btn btn-primary">Add</button>
-				<button ng-click="startGame()" ng-hide="players.length < 2" class="btn btn-success">Start the game!</button>
+				<form>
+					Name of new player: <input type="text" ng-model="newPlayerName" id="newPlayerName">
+					<button ng-click="addNewPlayer()" class="btn btn-primary">Add</button>
+					<button ng-click="startGame()" ng-hide="players.length < 2" class="btn btn-success">Start the game!</button>
+				</form>
 			</div>
 		</div>
 		<script src="lib/bootstrap-3.3.5/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#newPlayerName").focus();
+			});
+		</script>
 	</body>
 	<script src="js/controller.js"></script>
 </html> 
